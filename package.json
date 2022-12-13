@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "ts-node-dev ./src/index.ts"
+    "start:build": "tsc",
+    "start": "node ./build/index.js"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
