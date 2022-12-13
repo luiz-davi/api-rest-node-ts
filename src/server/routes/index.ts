@@ -16,8 +16,6 @@ router.post('/', (req, res) => {
   // req.params, são dados especificados na url da requisição
   // req.query, são dados passados na url, mas de forma implícita, ex.: api/teste?nome=aaaa
   // req.body, pegar parâmetro que vem dentro do corpo da requisição (body)
-
-  console.log(req.body);
   
   return res.status(StatusCodes.UNAUTHORIZED).json(req.body);
 });
