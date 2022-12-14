@@ -6,8 +6,10 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start:build": "tsc",
-    "start": "node ./build/index.js"
+    "start:build": "tsc && node ./build/src/index.js",
+    "start:local": "ts-node-dev --transpile-only src/index.ts",
+    "lint": "eslint ./src ./test --ext .ts",
+    "lint:fix": "eslint ./src ./test --ext .ts --fix"
   },
   "dependencies": {
     "dotenv": "^16.0.3",

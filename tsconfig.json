@@ -18,8 +18,12 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "outDir": "build",
-    "rootDir": "./src"
+    "rootDirs": ["./src", "./test"]
   },
+  "include": [
+    "./src/**/*.ts",
+    "./test/**/*.ts"
+  ],
   "exclude": [
     "./node_modules/*",
     "build"
