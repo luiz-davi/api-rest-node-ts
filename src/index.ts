@@ -1,3 +1,3 @@
 import { server } from './server/server';
 
-server.listen(process.env.PORT || 4000, () => console.log('Servidor rodando...'));
+server.listen(process.env.PORT || 5050, () => console.log('Servidor rodando...'));
