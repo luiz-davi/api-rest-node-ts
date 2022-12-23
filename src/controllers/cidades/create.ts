@@ -4,14 +4,14 @@ import * as yup from 'yup';
 
 // Utilizando interfaces para tipar o body
 interface ICidade {
-  nome: string;
-  email: string;
-  // email?: , significa que esse campo é opcional
+  name: string;
+  state: string;
+  // state?: , significa que esse campo é opcional
 }
 
 const validations: yup.SchemaOf<ICidade> = yup.object().shape({
-  nome: yup.string().min(5).required(),
-  email: yup.string().required().email()
+  name: yup.string().min(5).required(),
+  state: yup.string().required()
 });
 
 // o parametro *next* na rota é um middleware, que executa uma rotina antes de fazer a rotina principal do endpoint
@@ -22,23 +22,23 @@ export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {
   // req.query, são dados passados na url, mas de forma implícita, ex.: api/teste?nome=aaaa
   // req.body, pegar parâmetro que vem dentro do corpo da requisição (body)
   
-  let data: ICidade |  undefined = undefined;
+  let data: ICidade | undefined;
 
   try {
-    data = await validations.validate(req.body, { abortEarly: false })
+    data = await validations.validate(req.body, { abortEarly: false });
   } catch (err) {
     const yupError = err as yup.ValidationError;
     // definindo um tipo para um tipo inesperado de uma função catch
-    const validationErrors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
     // define a forma de um objeto
 
     yupError.inner.forEach((infos) => {
       if(!infos.path) { return; }
 
-      validationErrors[infos.path] = infos.errors.join(', ');
-    })
+      errors[infos.path] = infos.errors.join(', ');
+    });
 
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: validationErrors })
+    return res.status(StatusCodes.BAD_REQUEST).json({ errors });
   }
 
   console.log(data);
