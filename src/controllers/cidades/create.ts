@@ -1,6 +1,7 @@
 import { Request, RequestHandler, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
+import { validation } from '../../shared/middleware';
 
 // Utilizando interfaces para tipar o body
 interface ICidade {
@@ -8,62 +9,25 @@ interface ICidade {
   state: string;
   // state?: , significa que esse campo é opcional
 }
-
-const bodyValidations: yup.SchemaOf<ICidade> = yup.object().shape({
-  name: yup.string().min(5).required(),
-  state: yup.string().min(3).required()
-});
-
-export const createBodyValidation: RequestHandler = async (req, res, next) => {
-  try {
-    await bodyValidations.validate(req.body, { abortEarly: false });
-
-    return next();
-  } catch (err) {
-    const yupError = err as yup.ValidationError;
-    // definindo um tipo para um tipo inesperado de uma função catch
-    const errors: Record<string, string> = {};
-    // define a forma de um objeto
-
-    yupError.inner.forEach((infos) => {
-      if(!infos.path) { return; }
-
-      errors[infos.path] = infos.errors.join(', ');
-    });
-
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors });
-  }
-};
-
 interface IFilter {
   filter?: string;
-  // state?: , significa que esse campo é opcional
+  limit?: number
+  // parametro?: , significa que esse campo é opcional
 }
 
-const queryValidations: yup.SchemaOf<IFilter> = yup.object().shape({
-  filter: yup.string(),
-});
+export const createValidation = validation((getSchema) => ({
+  body: getSchema<ICidade>(yup.object().shape({
+    name: yup.string().min(5).required(),
+    state: yup.string().min(3).required()
+  })),
+  query: getSchema<IFilter>(yup.object().shape({
+    filter: yup.string().min(3),
+    limit: yup.number()
+  })),
+}));
 
-export const createQueryValidation: RequestHandler = async (req, res, next) => {
-  try {
-    await queryValidations.validate(req.query, { abortEarly: false });
 
-    return next();
-  } catch (err) {
-    const yupError = err as yup.ValidationError;
-    // definindo um tipo para um tipo inesperado de uma função catch
-    const errors: Record<string, string> = {};
-    // define a forma de um objeto
 
-    yupError.inner.forEach((infos) => {
-      if(!infos.path) { return; }
-
-      errors[infos.path] = infos.errors.join(', ');
-    });
-
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors });
-  }
-};
 
 // o parametro *next* na rota é um middleware, que executa uma rotina antes de fazer a rotina principal do endpoint
 export const create = async (req: Request<{}, {}, ICidade>, res: Response) => {

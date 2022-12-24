@@ -7,8 +7,7 @@ router.get('/', CidadesController.index);
 
 router.post(
   '/cities', 
-  CidadesController.createBodyValidation, 
-  CidadesController.createQueryValidation, 
+  CidadesController.createValidation, 
   CidadesController.create
 );
 
